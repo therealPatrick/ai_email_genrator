@@ -1,0 +1,59 @@
+<div class="welcome-container">
+  <h1>Welcome to APP</h1>
+  <p>Your AI-powered email reply assistant</p>
+
+  <% if user_signed_in? %>
+    <div class="cta-buttons">
+      <%= link_to "Generate New Reply", new_email_reply_path, class: "btn btn-primary" %>
+    </div>
+  <% else %>
+    <div class="cta-buttons">
+      <%= link_to "Sign Up to Get Started", new_user_registration_path, class: "btn btn-primary" %>
+      <%= link_to "Sign In", new_user_session_path, class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</div>
+
+<style>
+  .welcome-container {
+    text-align: center;
+    padding: 40px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .welcome-container h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .welcome-container p {
+    font-size: 1.2em;
+    color: #666;
+    margin-bottom: 30px;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 10px;
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+  }
+
+  .btn:hover {
+    opacity: 0.9;
+  }
+</style>

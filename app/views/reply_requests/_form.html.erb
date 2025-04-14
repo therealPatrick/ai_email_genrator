@@ -1,0 +1,37 @@
+<%= form_with(model: reply_request) do |form| %>
+  <% if reply_request.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(reply_request.errors.count, "error") %> prohibited this reply_request from being saved:</h2>
+
+      <ul>
+        <% reply_request.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :user_id, style: "display: block" %>
+    <%= form.text_field :user_id %>
+  </div>
+
+  <div>
+    <%= form.label :email, style: "display: block" %>
+    <%= form.text_area :email %>
+  </div>
+
+  <div>
+    <%= form.label :tone, style: "display: block" %>
+    <%= form.text_field :tone %>
+  </div>
+
+  <div>
+    <%= form.label :ai_reply, style: "display: block" %>
+    <%= form.text_area :ai_reply %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

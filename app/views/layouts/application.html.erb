@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ReplyGenie</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+    <style>
+      .notice, .alert {
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 4px;
+      }
+      .notice {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .alert {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: #f8f9fa;
+        margin-bottom: 20px;
+      }
+      .nav-links a {
+        margin-left: 15px;
+        text-decoration: none;
+        color: #333;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="nav">
+      <div class="nav-brand">
+        <%= link_to "ReplyGenie", root_path %>
+      </div>
+      <div class="nav-links">
+        <% if user_signed_in? %>
+          <%= link_to "Sign Out", destroy_user_session_path, data: { turbo_method: :delete } %>
+        <% else %>
+          <%= link_to "Sign In", new_user_session_path %>
+          <%= link_to "Sign Up", new_user_registration_path %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="container">
+      <% if notice %>
+        <p class="notice"><%= notice %></p>
+      <% end %>
+      <% if alert %>
+        <p class="alert"><%= alert %></p>
+      <% end %>
+
+      <%= yield %>
+    </div>
+  </body>
+</html>
