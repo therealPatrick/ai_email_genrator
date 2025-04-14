@@ -44,6 +44,15 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Authentication
 gem "devise"
 
+# OpenAI integration
+gem "ruby-openai"
+
+# Paddle integration
+gem "paddle"
+
+# Environment variables
+gem "dotenv-rails"
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 

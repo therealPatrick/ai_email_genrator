@@ -28,11 +28,19 @@ class ReplyRequestsController < ApplicationController
 
     respond_to do |format|
       if @reply_request.save
-        # Generate AI reply
-        @reply_request.update(ai_reply: generate_ai_reply(@reply_request))
+        begin
+          # Generate AI reply
+          generator = AiReplyGenerator.new(@reply_request.email, @reply_request.tone)
+          ai_reply = generator.generate
+          @reply_request.update(ai_reply: ai_reply)
 
-        format.html { redirect_to @reply_request, notice: "Reply was successfully generated." }
-        format.json { render :show, status: :created, location: @reply_request }
+          format.html { redirect_to @reply_request, notice: "Reply was successfully generated." }
+          format.json { render :show, status: :created, location: @reply_request }
+        rescue => e
+          @reply_request.destroy
+          format.html { redirect_to new_reply_request_path, alert: "Error generating reply: #{e.message}" }
+          format.json { render json: { error: e.message }, status: :unprocessable_entity }
+        end
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @reply_request.errors, status: :unprocessable_entity }
@@ -77,18 +85,12 @@ class ReplyRequestsController < ApplicationController
 
     def check_reply_limit
       unless current_user.can_generate_reply?
-        redirect_to reply_requests_path, alert: "You've used all your free replies. Please upgrade to continue."
+        redirect_to new_subscription_path, alert: "You've used all your free replies. Please upgrade to continue."
       end
     end
 
     # Only allow a list of trusted parameters through.
     def reply_request_params
       params.require(:reply_request).permit(:email, :tone)
-    end
-
-    def generate_ai_reply(reply_request)
-      # TODO: Implement actual AI generation
-      # For now, return a placeholder response
-      "Thank you for your email. I appreciate you reaching out. I'll get back to you soon regarding this matter."
     end
 end
