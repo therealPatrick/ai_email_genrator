@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :reply_requests
+  resources :reply_requests, only: [:index, :new, :create, :show, :edit, :update, :destroy]
   get 'home/index'
   devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -13,4 +13,8 @@ Rails.application.routes.draw do
 
   # Email reply generation routes
   resources :email_replies, only: [:new, :create]
+
+  # Subscription routes
+  resources :subscriptions, only: [:new, :create]
+  post 'subscriptions/webhook', to: 'subscriptions#webhook'
 end

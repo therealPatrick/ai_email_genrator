@@ -1,9 +1,12 @@
 class ReplyRequestsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_reply_request, only: %i[ show edit update destroy ]
+  before_action :authorize_user, only: %i[ show edit update destroy ]
+  before_action :check_reply_limit, only: [:new, :create]
 
   # GET /reply_requests or /reply_requests.json
   def index
-    @reply_requests = ReplyRequest.all
+    @reply_requests = current_user.reply_requests.order(created_at: :desc)
   end
 
   # GET /reply_requests/1 or /reply_requests/1.json
@@ -12,7 +15,7 @@ class ReplyRequestsController < ApplicationController
 
   # GET /reply_requests/new
   def new
-    @reply_request = ReplyRequest.new
+    @reply_request = current_user.reply_requests.build
   end
 
   # GET /reply_requests/1/edit
@@ -21,11 +24,14 @@ class ReplyRequestsController < ApplicationController
 
   # POST /reply_requests or /reply_requests.json
   def create
-    @reply_request = ReplyRequest.new(reply_request_params)
+    @reply_request = current_user.reply_requests.build(reply_request_params)
 
     respond_to do |format|
       if @reply_request.save
-        format.html { redirect_to @reply_request, notice: "Reply request was successfully created." }
+        # Generate AI reply
+        @reply_request.update(ai_reply: generate_ai_reply(@reply_request))
+
+        format.html { redirect_to @reply_request, notice: "Reply was successfully generated." }
         format.json { render :show, status: :created, location: @reply_request }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -63,8 +69,26 @@ class ReplyRequestsController < ApplicationController
       @reply_request = ReplyRequest.find(params[:id])
     end
 
+    def authorize_user
+      unless @reply_request.user == current_user
+        redirect_to reply_requests_path, alert: "You are not authorized to access this reply request."
+      end
+    end
+
+    def check_reply_limit
+      unless current_user.can_generate_reply?
+        redirect_to reply_requests_path, alert: "You've used all your free replies. Please upgrade to continue."
+      end
+    end
+
     # Only allow a list of trusted parameters through.
     def reply_request_params
-      params.require(:reply_request).permit(:user_id, :email, :tone, :ai_reply)
+      params.require(:reply_request).permit(:email, :tone)
+    end
+
+    def generate_ai_reply(reply_request)
+      # TODO: Implement actual AI generation
+      # For now, return a placeholder response
+      "Thank you for your email. I appreciate you reaching out. I'll get back to you soon regarding this matter."
     end
 end

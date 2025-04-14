@@ -1,0 +1,115 @@
+<div class="subscription-container">
+  <h1>Upgrade Your Account</h1>
+  <p class="subtitle">Get unlimited AI-generated email replies</p>
+
+  <div class="pricing-card">
+    <h2>Premium Plan</h2>
+    <div class="price">$9.99<span class="period">/month</span></div>
+    <ul class="features">
+      <li>Unlimited AI-generated replies</li>
+      <li>Multiple tone options</li>
+      <li>Priority support</li>
+      <li>Advanced email analysis</li>
+    </ul>
+    <%= button_to "Subscribe Now", subscriptions_path, class: "btn btn-primary" %>
+  </div>
+
+  <div class="current-plan">
+    <% if current_user.subscription&.active? %>
+      <p>You are currently on the Premium Plan.</p>
+    <% else %>
+      <p>You have used <%= 3 - current_user.remaining_free_replies %> of your 3 free replies.</p>
+    <% end %>
+  </div>
+</div>
+
+<style>
+  .subscription-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px;
+    text-align: center;
+  }
+
+  .subscription-container h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: #333;
+  }
+
+  .subtitle {
+    font-size: 1.2em;
+    color: #666;
+    margin-bottom: 40px;
+  }
+
+  .pricing-card {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+  }
+
+  .pricing-card h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .price {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+
+  .period {
+    font-size: 0.5em;
+    color: #666;
+    font-weight: normal;
+  }
+
+  .features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px 0;
+    text-align: left;
+  }
+
+  .features li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .features li:last-child {
+    border-bottom: none;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 12px 30px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+  }
+
+  .btn-primary:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .current-plan {
+    color: #666;
+    font-size: 1.1em;
+  }
+</style>

@@ -1,7 +1,7 @@
-<%= form_with(model: reply_request) do |form| %>
+<%= form_with(model: reply_request, class: "reply-request-form") do |form| %>
   <% if reply_request.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(reply_request.errors.count, "error") %> prohibited this reply_request from being saved:</h2>
+    <div class="error-messages">
+      <h2><%= pluralize(reply_request.errors.count, "error") %> prohibited this reply request from being saved:</h2>
 
       <ul>
         <% reply_request.errors.each do |error| %>
@@ -11,27 +11,122 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
+  <% if current_user.remaining_free_replies > 0 %>
+    <div class="free-replies-info">
+      <p>You have <strong><%= current_user.remaining_free_replies %></strong> free replies remaining.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :email, "Email to Reply To", class: "form-label" %>
+    <%= form.text_area :email, class: "form-control", rows: 5, placeholder: "Paste the email you want to reply to here..." %>
   </div>
 
-  <div>
-    <%= form.label :email, style: "display: block" %>
-    <%= form.text_area :email %>
+  <div class="form-group">
+    <%= form.label :tone, "Reply Tone", class: "form-label" %>
+    <%= form.select :tone, ReplyRequest.tones.map { |t| [t.titleize, t] }, { prompt: "Select a tone..." }, class: "form-control" %>
   </div>
 
-  <div>
-    <%= form.label :tone, style: "display: block" %>
-    <%= form.text_field :tone %>
+  <div class="form-group">
+    <%= form.label :ai_reply, "AI Generated Reply", class: "form-label" %>
+    <%= form.text_area :ai_reply, class: "form-control", rows: 10, readonly: true, placeholder: "The AI generated reply will appear here..." %>
   </div>
 
-  <div>
-    <%= form.label :ai_reply, style: "display: block" %>
-    <%= form.text_area :ai_reply %>
-  </div>
-
-  <div>
-    <%= form.submit %>
+  <div class="form-actions">
+    <%= form.submit class: "btn btn-primary" %>
+    <%= link_to "Cancel", reply_requests_path, class: "btn btn-secondary" %>
   </div>
 <% end %>
+
+<style>
+  .reply-request-form {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .free-replies-info {
+    background-color: #e7f3ff;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .free-replies-info p {
+    margin: 0;
+    color: #0056b3;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  }
+
+  .error-messages {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+
+  .error-messages h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .error-messages ul {
+    margin: 0;
+    padding-left: 20px;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .btn-secondary {
+    background-color: #6c757d;
+    color: white;
+  }
+
+  .btn:hover {
+    opacity: 0.9;
+  }
+</style>
